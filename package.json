@@ -1,0 +1,30 @@
+{
+  "name": "rabbitmq-wrapper",
+  "version": "0.0.1",
+  "description": "Rabbitmq wrapper with retry",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/idanperez/rabbitmq-wrapper.git"
+  },
+  "author": "idanperez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/idanperez/rabbitmq-wrapper/issues"
+  },
+  "homepage": "https://github.com/idanperez/rabbitmq-wrapper#readme",
+  "dependencies": {
+    "@types/winston": "^2.4.4",
+    "amqplib": "^0.5.5",
+    "autotracer": "^0.0.3",
+    "opentracing": "^0.14.4",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.5.13",
+    "typescript": "^3.8.3"
+  }
+}
