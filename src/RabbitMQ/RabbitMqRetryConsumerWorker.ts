@@ -52,12 +52,14 @@ export default class RabbitMqRetryConsumerWorker<T> extends RabbitMq {
                 consumedSpan.setTag('RetryNumber', rabbitMessage.numOfFailures);
                 this._logger.info({
                     message: 'Starting to work on msg',
+                    messageId: msg.properties.messageId
                 });
 
                 await this._messageProcessor.process(rabbitMessage.rabbitMessage);
                 this._channel.ack(msg, false);
                 this._logger.info({
                     message: 'Successfully finished processing message',
+                    messageId: msg.properties.messageId,
                     processingMessageStatus: 'Success',
                     numberOfTries: rabbitMessage.numOfFailures + 1,
                     numberOfTriesUntilSuccess: rabbitMessage.numOfFailures + 1
@@ -68,8 +70,8 @@ export default class RabbitMqRetryConsumerWorker<T> extends RabbitMq {
                     consumedSpan.log({ message: 'removed from queue, wont work on this message' });
                     this._logger.error({
                         err: e,
-                        errInnerError: e.innerError,
                         message: 'Failed to work on message, invalid message, ignoring it',
+                        messageId: msg.properties.messageId,
                         processingMessageStatus: 'InvalidMessage',
                         numberOfTries: rabbitMessage.numOfFailures + 1,
                     });
@@ -81,7 +83,7 @@ export default class RabbitMqRetryConsumerWorker<T> extends RabbitMq {
                     consumedSpan.setTag('failureType', 'TemporaryFailureError')
                     this._logger.warn({
                         err: e,
-                        errInnerError: e.innerError,
+                        messageId: msg.properties.messageId,
                         message: 'Temporary error occourd, sending to dlx',
                         processingMessageStatus: 'TemporaryFailure',
                         numberOfTries: rabbitMessage.numOfFailures + 1,
@@ -94,6 +96,7 @@ export default class RabbitMqRetryConsumerWorker<T> extends RabbitMq {
                         consumedSpan.setTag('failureType', 'General Error Occourd');
                         this._logger.warn({
                             err: e,
+                            messageId: msg.properties.messageId,
                             message: `Failed Working on message, failure number ${rabbitMessage.numOfFailures + 1} `,
                             processingMessageStatus: 'NormalRetry',
                             numberOfTries: rabbitMessage.numOfFailures + 1,
@@ -109,6 +112,7 @@ export default class RabbitMqRetryConsumerWorker<T> extends RabbitMq {
                         {
                             err: e,
                             message: `Failed to work on message, tried ${rabbitMessage.numOfFailures + 1} than the max number of retries: ${this._workerSettings.NumberOfRetries}, ignoring it`,
+                            messageId: msg.properties.messageId,
                             processingMessageStatus: 'MaximumRetriesReached',
                             numberOfTries: rabbitMessage.numOfFailures + 1,
                         });
