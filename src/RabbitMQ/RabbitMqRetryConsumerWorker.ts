@@ -1,6 +1,6 @@
 import { Message, MessageProperties } from 'amqplib';
 import * as opentracing from 'opentracing';
-import { Logger } from 'winston'
+import winston, { Logger } from 'winston'
 import IErrorHandler from './IErrorHandler';
 import IMessageProcessor from './IMessageProcessor';
 import RabbitMqMessage from './RabbitMessage';
@@ -13,18 +13,11 @@ import { autoTracer } from 'autotracer';
 import { RabbitMq } from './RabbitMq';
 
 export default class RabbitMqRetryConsumerWorker<T> extends RabbitMq {
-    private _errorHandler: IErrorHandler<T>;
-    private _workerSettings: RabbitMQWorkerSettings;
-    private _messageProcessor: IMessageProcessor<T>;
-    private _logger: Logger;
-
-    constructor(workerSettings: RabbitMQWorkerSettings,
-        messageProcessor: IMessageProcessor<T>, errorHandler: IErrorHandler<T>) {
-
-        super(workerSettings, workerSettings.QueueSettings);
-        this._messageProcessor = messageProcessor;
-        this._workerSettings = workerSettings;
-        this._errorHandler = errorHandler;
+    constructor(private _workerSettings: RabbitMQWorkerSettings,
+        private _messageProcessor: IMessageProcessor<T>,
+        private _errorHandler: IErrorHandler<T>,
+        private _logger: Logger = winston.createLogger()) {
+        super(_workerSettings, _workerSettings.QueueSettings);
     }
 
     public async init() {

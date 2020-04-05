@@ -2,7 +2,8 @@
   "name": "rabbitmq-wrapper",
   "version": "0.0.1",
   "description": "Rabbitmq wrapper with retry",
-  "main": "./dist/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "npm run clean && tsc",
     "clean": "rimraf dist",

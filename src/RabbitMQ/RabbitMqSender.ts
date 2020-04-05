@@ -10,11 +10,8 @@ import { RabbitMQSenderSettings } from './RabbitMqSettings';
 
 
 export default class RabbitMqSender extends RabbitMq implements IQueueSender {
-    private _senderSettings: RabbitMQSenderSettings;
-
-    constructor(settings: RabbitMQSenderSettings) {
-        super(settings);
-        this._senderSettings = settings;
+    constructor(private _senderSettings: RabbitMQSenderSettings) {
+        super(_senderSettings);
     }
 
     public publishMessage<T>(message: T, routing?: string): void {

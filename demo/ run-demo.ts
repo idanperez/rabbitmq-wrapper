@@ -1,13 +1,19 @@
-import RabbitMqRetryConsumerWorker from './src/RabbitMQ/RabbitMqRetryConsumerWorker';
-import RabbitMqSender from './src/RabbitMQ/RabbitMqSender';
-import { QueueSettings, RabbitMQSettings, RabbitMQWorkerSettings } from './src/RabbitMQ/RabbitMqSettings';
-import { ErrorHandler } from './demo/ErrorHandler';
-import { TestMessage } from './demo/message';
-import { Worker } from './demo/Worker';
+// library imports
+import RabbitMqRetryConsumerWorker from '../src/RabbitMQ/RabbitMqRetryConsumerWorker';
+import RabbitMqSender from '../src/RabbitMQ/RabbitMqSender';
+import { QueueSettings, RabbitMQSettings, RabbitMQWorkerSettings } from '../src/RabbitMQ/RabbitMqSettings';
 
+// own implementations
+import { ErrorHandler } from './error-handler';
+import { TestMessage } from './message';
+import { Worker } from './demo-worker';
+
+// logs
 import winston from 'winston';
-import { parseErrors } from './src/Logs/log-parser';
-import { TemporaryFailureError } from '.';
+import { parseErrors } from '../src/Logs/log-parser';
+
+// import {getTracer} from 'autotracer';
+
 
 const logger = winston.createLogger({
     format: winston.format.combine(
@@ -21,16 +27,6 @@ const logger = winston.createLogger({
         }),
     ]
 });
-logger.info('with please error parsed', { err: new TemporaryFailureError("fuck, this is main!", new Error("this is ineer, hope it works")), anotherParams: { idk: 'works' } });
-
-// LegoLogger.setSettings({
-//     consoleLevel: 'info', environment: 'prod', name: 'fuck', project: 'idans', service: 'why so many params ? ', LogStashSettings: {
-//         host: 'localhost',
-//         logLevel: 'info',
-//         port: 5000,
-//         protocol: 'udp'
-//     }
-// })
 
 let settings: RabbitMQSettings;
 settings = {
@@ -53,7 +49,8 @@ const consumerSettings: RabbitMQWorkerSettings = {
 
 const worker = new RabbitMqRetryConsumerWorker(consumerSettings,
     new Worker(),
-    new ErrorHandler());
+    new ErrorHandler(),
+    logger);
 
 // getTracer({ agentHostName: 'agentHostName', serviceName: 'test' });
 worker.init().then(() => {

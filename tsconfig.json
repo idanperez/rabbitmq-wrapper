@@ -59,7 +59,7 @@
   "include":[
     "src/**.ts",
     "demo/**.ts",
-    "testLibrary.ts"
+    "index.ts"
   ],
   "exclude": [
     "dist"
