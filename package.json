@@ -4,7 +4,10 @@
   "description": "Rabbitmq wrapper with retry",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "test"
+    "build": "npm run clean && tsc",
+    "clean": "rimraf dist",
+    "nodemon": "nodemon",
+    "test": "ts-node testLibrary.ts"
   },
   "repository": {
     "type": "git",
@@ -17,14 +20,20 @@
   },
   "homepage": "https://github.com/idanperez/rabbitmq-wrapper#readme",
   "dependencies": {
-    "@types/winston": "^2.4.4",
     "amqplib": "^0.5.5",
     "autotracer": "^0.0.3",
+    "nodemon": "^2.0.2",
     "opentracing": "^0.14.4",
+    "tslint": "^6.1.1",
     "winston": "^3.2.1"
   },
   "devDependencies": {
     "@types/amqplib": "^0.5.13",
+    "@types/node": "^12.12.31",
+    "@types/winston": "^2.4.4",
+    "logform": "^2.1.2",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.6.2",
     "typescript": "^3.8.3"
   }
 }

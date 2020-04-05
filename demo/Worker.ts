@@ -2,7 +2,7 @@ import { delay } from 'bluebird';
 import InvalidMessageDataError from '../src/Errors/InvalidMessageDataError';
 import TemporaryFailureError from '../src/Errors/TemporaryFailureError';
 import IMessageProcessor from '../src/RabbitMQ/IMessageProcessor';
-import autoTracer from '../Tracing/autoTracer/autoTracing';
+import { autoTracer } from 'autotracer';
 import { TestMessage } from './message';
 
 export class Worker implements IMessageProcessor<TestMessage> {

@@ -1,31 +1,42 @@
 import RabbitMqRetryConsumerWorker from './src/RabbitMQ/RabbitMqRetryConsumerWorker';
 import RabbitMqSender from './src/RabbitMQ/RabbitMqSender';
 import { QueueSettings, RabbitMQSettings, RabbitMQWorkerSettings } from './src/RabbitMQ/RabbitMqSettings';
-import { ErrorHandler } from './RabbitMqTests/ErrorHandler';
-import { TestMessage } from './RabbitMqTests/message';
-import { Worker } from './RabbitMqTests/Worker';
+import { ErrorHandler } from './demo/ErrorHandler';
+import { TestMessage } from './demo/message';
+import { Worker } from './demo/Worker';
 
-// import getTracer, { wrapAutoTracer } from './Tracing/InitTracer';
-// const loggerSettings: LoggerSettings = {
-//     consoleLevel: 'info',
-//     environment: 'TrumpTests',
-//     name: '4rabbitmq-test',
-//     project: '4rabbitmq-test',
-//     service: '4rabbitmq-test',
-//     LogStashSettings: {
-//         host: 'LogStashHostAdress',
-//         port: 8085,
+import winston from 'winston';
+import { parseErrors } from './src/Logs/log-parser';
+import { TemporaryFailureError } from '.';
+
+const logger = winston.createLogger({
+    format: winston.format.combine(
+        parseErrors(),
+        winston.format.json()
+    ),
+    transports: [
+        new winston.transports.Console(),
+        new winston.transports.Http({
+            host: 'localhost', port: 5002
+        }),
+    ]
+});
+logger.info('with please error parsed', { err: new TemporaryFailureError("fuck, this is main!", new Error("this is ineer, hope it works")), anotherParams: { idk: 'works' } });
+
+// LegoLogger.setSettings({
+//     consoleLevel: 'info', environment: 'prod', name: 'fuck', project: 'idans', service: 'why so many params ? ', LogStashSettings: {
+//         host: 'localhost',
 //         logLevel: 'info',
-//         protocol: 'tcp',
-//     },
-// };
+//         port: 5000,
+//         protocol: 'udp'
+//     }
+// })
 
 let settings: RabbitMQSettings;
 settings = {
     Uri: 'amqp://RabbitMqURI',
     ExchangeName: 'jaeger',
 };
-
 const sender: RabbitMqSender = new RabbitMqSender({ ...settings });
 const queueSettings: QueueSettings = {
     HasDlx: true,
