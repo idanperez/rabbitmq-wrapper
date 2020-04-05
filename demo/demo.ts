@@ -11,10 +11,9 @@ import { Worker } from './demo-worker';
 // logs
 import winston from 'winston';
 import { parseErrors } from '../src/Logs/log-parser';
+import { initJaegerTracer } from 'autotracer';
 
-// import {getTracer} from 'autotracer';
-
-
+initJaegerTracer({ agentHostName: 'localhost', serviceName: 'test'});
 const logger = winston.createLogger({
     format: winston.format.combine(
         parseErrors(),
@@ -30,13 +29,14 @@ const logger = winston.createLogger({
 
 let settings: RabbitMQSettings;
 settings = {
-    Uri: 'amqp://RabbitMqURI',
-    ExchangeName: 'jaeger',
+    Uri: 'amqp://guest:guest@localhost',
+    ExchangeName: 'wrapper-demo',
 };
+
 const sender: RabbitMqSender = new RabbitMqSender({ ...settings });
 const queueSettings: QueueSettings = {
     HasDlx: true,
-    ExchangeName: 'test-exchange',
+    ExchangeName: 'wrapper-demo',
     QueueName: 'test-queue',
     ExchangeType: 'direct',
     RoutingKeys: ['A', 'B.C'],
@@ -52,11 +52,10 @@ const worker = new RabbitMqRetryConsumerWorker(consumerSettings,
     new ErrorHandler(),
     logger);
 
-// getTracer({ agentHostName: 'agentHostName', serviceName: 'test' });
 worker.init().then(() => {
     sender.init().then(() => {
         sender.publishMessage<TestMessage>({ dummyMessage: 'InvalidFailed' }, 'A');
-        sender.publishMessage<TestMessage>({ dummyMessage: 'regular' }, 'A');
+        sender.publishMessage<TestMessage>({ dummyMessage: 'tempFailed' }, 'A');
         sender.publishMessage<TestMessage>({ dummyMessage: 'regular' }, 'A');
         sender.publishMessage<TestMessage>({ dummyMessage: 'regular' }, 'A');
     }).catch((err) => console.log(err));

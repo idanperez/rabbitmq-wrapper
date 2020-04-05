@@ -32,10 +32,6 @@ export class RabbitMq {
         });
 
         this._channel = channel;
-
-        if (this._queueSettings) {
-            this.intiallizeQueue(this._queueSettings);
-        }
     }
 
     public async intiallizeQueue(queueSettings: QueueSettings) {
@@ -84,6 +80,7 @@ export class RabbitMq {
             if (!this._channel) {
                 reject(new Error('Channel to rabbitmq not established'));
             }
+
             this._channel.assertExchange(exchangeName, exchangeType, { durable: true }, (err: any) => {
                 if (err) {
                     reject(err);

@@ -59,6 +59,7 @@ export default class RabbitMqRetryConsumerWorker<T> extends RabbitMq {
                 this._logger.info({
                     message: 'Successfully finished processing message',
                     processingMessageStatus: 'Success',
+                    numberOfTries: rabbitMessage.numOfFailures + 1,
                     numberOfTriesUntilSuccess: rabbitMessage.numOfFailures + 1
                 });
             } catch (e) {

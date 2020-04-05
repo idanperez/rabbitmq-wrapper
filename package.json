@@ -8,7 +8,7 @@
     "build": "npm run clean && tsc",
     "clean": "rimraf dist",
     "nodemon": "nodemon",
-    "test": "ts-node testLibrary.ts"
+    "test": "ts-node ./demo/run-demo.ts"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
   "homepage": "https://github.com/idanperez/rabbitmq-wrapper#readme",
   "dependencies": {
     "amqplib": "^0.5.5",
-    "autotracer": "^0.0.3",
+    "autotracer": "^0.0.5",
     "nodemon": "^2.0.2",
     "opentracing": "^0.14.4",
     "tslint": "^6.1.1",
