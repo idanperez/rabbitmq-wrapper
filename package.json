@@ -8,7 +8,7 @@
     "build": "npm run clean && tsc",
     "clean": "rimraf dist",
     "nodemon": "nodemon",
-    "test": "ts-node ./demo/run-demo.ts"
+    "test": "ts-node ./demo/demo.ts"
   },
   "repository": {
     "type": "git",
